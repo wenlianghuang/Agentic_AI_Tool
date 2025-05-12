@@ -4,8 +4,10 @@ import wave
 #from moviepy.editor import VideoFileClip, AudioFileClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.audio.io.AudioFileClip import AudioFileClip
+import argparse
+import os
 # Open camera and microphone
-def open_camera_and_microphone():
+def open_camera_and_microphone(final_output_filename):
     # Camera setup
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -17,7 +19,8 @@ def open_camera_and_microphone():
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS)) or 30  # Default to 30 FPS if not available
     video_filename = "output.avi"
-    final_output_filename = "output_with_audio.mp4"
+    #final_output_filename = final_output_filename
+    
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(video_filename, fourcc, fps, (frame_width, frame_height))
 
@@ -86,7 +89,21 @@ def open_camera_and_microphone():
         final_clip = video_clip.with_audio(audio_clip)
         final_clip.write_videofile(final_output_filename, codec="libx264", audio_codec="aac",logger=None)
 
+        video_clip.close()
+        audio_clip.close()
+        final_clip.close()
         print(f"Final video with audio saved to {final_output_filename}")
-
+        # Remove temporary video and audio files
+        try:
+            #shutil.rmtree(video_filename, ignore_errors=True)
+            #shutil.rmtree(audio_filename, ignore_errors=True)
+            os.remove(video_filename)
+            os.remove(audio_filename)
+            print("Temporary files removed.")
+        except Exception as e:
+            print(f"Error while deleting temporary files: {e}")
 if __name__ == "__main__":
-    open_camera_and_microphone()
+    parser = argparse.ArgumentParser(description="Open camera and microphone, record video and audio.")
+    parser.add_argument("--output", type=str, default="output_with_audio.mp4", help="Final output filename with audio")
+    args = parser.parse_args()
+    open_camera_and_microphone(args.output)
