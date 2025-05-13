@@ -22,14 +22,15 @@ def set_master_volume(speaker_volume):
         # 設置喇叭音量為30%
         #volume.SetMasterVolumeLevelScalar(SPEAKER_VOLUME, None)
         volume.SetMasterVolumeLevelScalar(speaker_volume, None)
-        print(f"已將系統喇叭音量從 {current_volume*100:.1f}% 調整為 {speaker_volume*100:.1f}%")
+        #print(f"已將系統喇叭音量從 {current_volume*100:.1f}% 調整為 {speaker_volume*100:.1f}%")
         #return True
     except Exception as e:
-        print(f"設置系統喇叭音量時發生錯誤: {e}")
+        pass
+        #print(f"設置系統喇叭音量時發生錯誤: {e}")
         #return False
 
 def set_all_app_volumes(app_audio_volume):
-    print(f"正在將所有應用程式音量調整為 {app_audio_volume}%...")
+    #print(f"正在將所有應用程式音量調整為 {app_audio_volume}%...")
     app_audio_volume = round(app_audio_volume / 100, 2)
     # 獲取所有音訊會話
     sessions = AudioUtilities.GetAllSessions()
@@ -50,16 +51,16 @@ def set_all_app_volumes(app_audio_volume):
             app_volume.SetMasterVolume(app_audio_volume, None)
             adjusted_count += 1
             
-            print(f"{app_name}: 音量已調整為 {app_audio_volume*100:.1f}%")
+            #print(f"{app_name}: 音量已調整為 {app_audio_volume*100:.1f}%")
         except:
             pass
     
-    print(f"已調整 {adjusted_count} 個應用程式的音量為 {app_audio_volume * 100:.1f}%")
+    #print(f"已調整 {adjusted_count} 個應用程式的音量為 {app_audio_volume * 100:.1f}%")
 
 def show_current_volumes():
     """顯示所有音訊源的當前音量"""
-    print("\n當前音量設置:")
-    print("-" * 30)
+    #print("\n當前音量設置:")
+    #print("-" * 30)
     
     # 顯示系統喇叭音量
     devices = AudioUtilities.GetSpeakers()
@@ -67,7 +68,7 @@ def show_current_volumes():
     volume = ctypes.cast(interface, ctypes.POINTER(IAudioEndpointVolume))
     master_volume = volume.GetMasterVolumeLevelScalar()
     
-    print(f"系統喇叭: {master_volume*100:.1f}%")
+    #print(f"系統喇叭: {master_volume*100:.1f}%")
     
     # 顯示應用程式音量
     sessions = AudioUtilities.GetAllSessions()
@@ -75,21 +76,23 @@ def show_current_volumes():
         try:
             if session.SimpleAudioVolume and session.Process:
                 current_volume = session.SimpleAudioVolume.GetMasterVolume()
-                print(f"{session.Process.name()}: {current_volume*100:.1f}%")
+                #print(f"{session.Process.name()}: {current_volume*100:.1f}%")
         except:
             pass
     
-    print("-" * 30)
+    #print("-" * 30)
 def adjust_volume(master_volume, app_volume):
     """調整系統和應用程式音量"""
     try:
         set_master_volume(master_volume)
     except Exception as e:
-        print(f"設置系統音量時發生錯誤: {e}")
+        #print(f"設置系統音量時發生錯誤: {e}")
+        pass
     try:
         set_all_app_volumes(app_volume)
     except Exception as e:
-        print(f"設置應用程式音量時發生錯誤: {e}")
+        #print(f"設置應用程式音量時發生錯誤: {e}")
+        pass
 if __name__ == "__main__":
     
     '''
